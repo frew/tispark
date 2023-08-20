@@ -106,9 +106,6 @@ case class SpecialSum(child: Expression, retType: DataType, initVal: Any)
   // Return data type.
   override def dataType: DataType = resultType
 
-  override def checkInputDataTypes(): TypeCheckResult =
-    TypeUtils.checkForNumericExpr(child.dataType, "function sum")
-
   /**
    *  The implement is same as the [[org.apache.spark.sql.catalyst.expressions.aggregate.Sum]]
    * @param newChildren

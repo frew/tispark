@@ -25,12 +25,6 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.pingcap.tispark</groupId>
-            <artifactId>db-random-test</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.scalaj</groupId>
             <artifactId>scalaj-http_${scala.binary.version}</artifactId>
             <version>${scalaj.version}</version>

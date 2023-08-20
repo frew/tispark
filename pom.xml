@@ -169,13 +169,9 @@
     </distributionManagement>
 
     <modules>
-        <module>db-random-test</module>
         <module>tikv-client</module>
         <module>core</module>
-        <module>spark-wrapper/spark-3.0</module>
-        <module>spark-wrapper/spark-3.1</module>
-        <module>spark-wrapper/spark-3.2</module>
-        <module>spark-wrapper/spark-3.3</module>
+        <module>spark-wrapper/spark-3.4</module>
         <module>assembly</module>
     </modules>
 
