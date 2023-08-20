@@ -77,9 +77,10 @@
         <spark3_1.version>3.1.3</spark3_1.version>
         <spark3_2.version>3.2.3</spark3_2.version>
         <spark3_3.version>3.3.1</spark3_3.version>
-        <scala.binary.version>2.12</scala.binary.version>
-        <scala.version>2.12.10</scala.version>
-        <scala.version.release>2.12</scala.version.release>
+        <spark3_4.version>3.4.0</spark3_4.version>
+        <scala.binary.version>2.13</scala.binary.version>
+        <scala.version>2.13.8</scala.version>
+        <scala.version.release>2.13</scala.version.release>
         <!-- for now, not running scalafmt as part of default verify pipeline -->
         <scalafmt.skip>true</scalafmt.skip>
         <scalatest.version>3.0.8</scalatest.version>
@@ -210,6 +211,17 @@
                 <spark.version.compile>${spark3_3.version}</spark.version.compile>
                 <spark.version.test>${spark3_3.version}</spark.version.test>
                 <spark.version.release>3.3</spark.version.release>
+            </properties>
+        </profile>
+        <profile>
+            <id>spark-3.4</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <spark.version.compile>${spark3_4.version}</spark.version.compile>
+                <spark.version.test>${spark3_4.version}</spark.version.test>
+                <spark.version.release>3.4</spark.version.release>
             </properties>
         </profile>
         <profile>
