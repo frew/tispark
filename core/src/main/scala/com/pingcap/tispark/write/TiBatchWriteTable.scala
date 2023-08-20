@@ -65,7 +65,7 @@ class TiBatchWriteTable(
     tiTableInfo.getColumns.asScala.map(col => col.getName -> col).toMap
   private var colsInDf: List[String] = df.columns.toList.map(_.toLowerCase())
   private val uniqueIndices: Seq[TiIndexInfo] =
-    tiTableInfo.getIndices.asScala.filter(index => index.isUnique)
+    tiTableInfo.getIndices.asScala.filter(index => index.isUnique).toSeq
   private val handleCol: TiColumnInfo = tiTableInfo.getPKIsHandleColumn
   private var tableLocked: Boolean = false
   private var autoIncProvidedID: Boolean = false

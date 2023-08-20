@@ -28,7 +28,7 @@ import org.apache.spark.sql.vectorized.ColumnarBatch
 import org.apache.spark.{Partition, TaskContext, TaskKilledException}
 import org.slf4j.Logger
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 class TiRowRDD(
     override val dagRequest: TiDAGRequest,
@@ -56,8 +56,8 @@ class TiRowRDD(
       private val snapshot = clientSession.createSnapshot(dagRequest.getStartTs)
       private[this] val tasks = tiPartition.tasks
 
-      private val iterator =
-        snapshot.tableReadChunk(dagRequest, tasks, chunkBatchSize)
+      private val it =
+        snapshot.tableReadChunk(dagRequest, tasks.asJava, chunkBatchSize).asScala
 
       override def hasNext: Boolean = {
         // Kill the task in case it has been marked as killed. This logic is from
@@ -66,11 +66,11 @@ class TiRowRDD(
         if (context.isInterrupted()) {
           throw new TaskKilledException
         }
-        iterator.hasNext
+        it.hasNext
       }
 
       override def next(): ColumnarBatch = {
-        TiColumnarBatchHelper.createColumnarBatch(iterator.next)
+        TiColumnarBatchHelper.createColumnarBatch(it.next)
       }
     }.asInstanceOf[Iterator[InternalRow]]
 

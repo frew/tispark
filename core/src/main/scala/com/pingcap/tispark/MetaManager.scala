@@ -19,7 +19,7 @@ package com.pingcap.tispark
 import com.pingcap.tikv.catalog.Catalog
 import com.pingcap.tikv.meta.{TiDBInfo, TiTableInfo}
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 // Likely this needs to be merge to client project
 // and serving inside metastore if any
@@ -31,10 +31,10 @@ class MetaManager(var catalog: Catalog) {
   }
 
   def getDatabases: List[TiDBInfo] =
-    catalog.listDatabases().toList
+    catalog.listDatabases().asScala.toList
 
   def getTables(db: TiDBInfo): List[TiTableInfo] =
-    catalog.listTables(db).toList
+    catalog.listTables(db).asScala.toList
 
   def reloadCache(loadTables: Boolean = false): Unit =
     catalog.reloadCache(loadTables)
@@ -46,10 +46,10 @@ class MetaManager(var catalog: Catalog) {
     Option(catalog.getDatabase(dbName))
 
   def getDatabasesFromCache: List[TiDBInfo] =
-    catalog.listDatabasesFromCache().toList
+    catalog.listDatabasesFromCache().asScala.toList
 
   def getTablesFromCache(db: TiDBInfo): List[TiTableInfo] =
-    catalog.listTablesFromCache(db).toList
+    catalog.listTablesFromCache(db).asScala.toList
 
   def getTableFromCache(dbName: String, tableName: String): Option[TiTableInfo] =
     Option(catalog.getTable(dbName, tableName))

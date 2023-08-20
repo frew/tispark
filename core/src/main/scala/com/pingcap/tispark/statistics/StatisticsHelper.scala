@@ -29,7 +29,7 @@ import com.pingcap.tikv.types.{BytesType, IntegerType}
 import org.slf4j.LoggerFactory
 import org.tikv.common.meta.TiTimestamp
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 import scala.collection.mutable
 
 object StatisticsHelper {
@@ -81,7 +81,7 @@ object StatisticsHelper {
     if (!loadAll && !neededColIds.contains(histID)) needed = false
 
     val (indexFlag, dataType) = if (isIndex) {
-      indexInfos = table.getIndices.filter { _.getId == histID }
+      indexInfos = table.getIndices.asScala.filter { _.getId == histID }
       if (indexInfos.isEmpty) {
         logger.warn(
           s"Cannot find index histogram id $histID in table info ${table.getName}[${table.getId}] now. It may be deleted.")
@@ -91,7 +91,7 @@ object StatisticsHelper {
         (1, BytesType.BLOB)
       }
     } else {
-      colInfos = table.getColumns.filter { _.getId == histID }
+      colInfos = table.getColumns.asScala.filter { _.getId == histID }
       if (colInfos.isEmpty) {
         logger.warn(
           s"Cannot find column histogram id $histID in table info ${table.getName}[${table.getId}] now. It may be deleted.")
@@ -119,7 +119,7 @@ object StatisticsHelper {
   }
 
   private def checkColExists(table: TiTableInfo, column: String): Boolean =
-    table.getColumns.exists { _.matchName(column) }
+    table.getColumns.asScala.exists { _.matchName(column) }
 
   private[statistics] def shouldUpdateHistogram(
       statistics: ColumnStatistics,
@@ -178,7 +178,7 @@ object StatisticsHelper {
         .setNDV(matched.distinct)
         .setNullCount(matched.nullCount)
         .setLastUpdateVersion(matched.version)
-        .setBuckets(buckets)
+        .setBuckets(buckets.asJava)
         .build()
       // parse CMSketch
       val rawData = matched.rawCMSketch
@@ -224,7 +224,7 @@ object StatisticsHelper {
           .equal(
             ColumnRef.create("table_id", IntegerType.BIGINT),
             Constant.create(targetTblId, IntegerType.BIGINT)))
-      .addRequiredCols(requiredCols.filter(checkColExists(tableInfo, _)))
+      .addRequiredCols(requiredCols.filter(checkColExists(tableInfo, _)).asJava)
       .setStartTs(startTs)
       .build(PushDownType.NORMAL)
   }
@@ -249,7 +249,7 @@ object StatisticsHelper {
             Constant.create(targetTblId, IntegerType.BIGINT)))
       .setLimit(Int.MaxValue)
       .addOrderBy(ByItem.create(ColumnRef.create("bucket_id", IntegerType.BIGINT), false))
-      .addRequiredCols(bucketRequiredCols.filter(checkColExists(bucketTable, _)))
+      .addRequiredCols(bucketRequiredCols.filter(checkColExists(bucketTable, _)).asJava)
       .setStartTs(startTs)
       .build(PushDownType.NORMAL)
 }

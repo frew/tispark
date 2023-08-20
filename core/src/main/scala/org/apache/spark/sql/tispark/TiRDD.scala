@@ -29,7 +29,7 @@ import org.tikv.common.exception
 import org.tikv.common.exception.TiInternalException
 import org.tikv.common.util.RangeSplitter.RegionTask
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
@@ -62,7 +62,7 @@ abstract class TiRDD(
 
     var index = 0
     val result = new ListBuffer[TiPartition]
-    for (task <- keyWithRegionTasks) {
+    for (task <- keyWithRegionTasks.asScala) {
       hostTasksMap.addBinding(task.getHost, task)
       val tasks = hostTasksMap(task.getHost)
       if (tasks.size >= partitionPerSplit) {

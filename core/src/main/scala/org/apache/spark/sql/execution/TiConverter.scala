@@ -70,7 +70,7 @@ object TiConverter {
       return null
     }
 
-    import scala.collection.JavaConversions._
+    import scala.jdk.CollectionConverters._
     val result: java.lang.Object = value match {
       case v: java.lang.Boolean => v
       case v: java.lang.Byte => v
@@ -84,7 +84,7 @@ object TiConverter {
       case v: java.sql.Date => v
       case v: java.sql.Timestamp => v
       case v: Array[Byte] =>
-        val r: java.util.List[java.lang.Byte] = v.toList.map(b => java.lang.Byte.valueOf(b))
+        val r: java.util.List[java.lang.Byte] = v.toList.map(b => java.lang.Byte.valueOf(b)).asJava
         r
       // TODO: to support following types
       //case v: scala.collection.Seq[_] =>

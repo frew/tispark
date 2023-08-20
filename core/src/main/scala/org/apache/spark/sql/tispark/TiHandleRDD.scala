@@ -28,8 +28,7 @@ import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.{Partition, TaskContext, TaskKilledException}
 
 import java.util
-import scala.collection.JavaConversions._
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * RDD used for retrieving handles from TiKV. Result is arranged as
@@ -62,7 +61,7 @@ class TiHandleRDD(
       private val snapshot = clientSession.createSnapshot(dagRequest.getStartTs)
       private[this] val tasks = tiPartition.tasks
 
-      private val handleIterator = snapshot.indexHandleRead(dagRequest, tasks)
+      private val handleIterator = snapshot.indexHandleRead(dagRequest, tasks.asJava)
       private val regionManager = clientSession.getTiKVSession.getRegionManager
       private lazy val handleList = {
         val lst = new util.ArrayList[Handle]()
@@ -81,20 +80,21 @@ class TiHandleRDD(
       private val regionHandleMap = RangeSplitter
         .newSplitter(regionManager)
         .groupByAndSortHandlesByRegionId(physicalId, handleList)
+        .asScala
         .map(x => (x._1.first.getId, x._2))
 
-      private val iterator = regionHandleMap.iterator
+      private val it = regionHandleMap.iterator
 
       override def hasNext: Boolean = {
         // Kill the task in case it has been marked as killed.
         if (context.isInterrupted()) {
           throw new TaskKilledException
         }
-        iterator.hasNext
+        it.hasNext
       }
 
       override def next(): InternalRow = {
-        val next = iterator.next
+        val next = it.next
         val regionId = next._1
         val handleList = next._2
 

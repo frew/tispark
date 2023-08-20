@@ -93,7 +93,7 @@
         <CodeCacheSize>1g</CodeCacheSize>
         <test.exclude.tags/>
         <test.include.tags/>
-        <scalaj.version>2.3.0</scalaj.version>
+        <scalaj.version>2.4.2</scalaj.version>
         <lombok.version>1.18.22</lombok.version>
         <someModule.test.excludes></someModule.test.excludes>
     </properties>

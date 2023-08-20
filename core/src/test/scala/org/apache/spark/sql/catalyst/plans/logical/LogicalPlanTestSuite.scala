@@ -783,8 +783,8 @@ class LogicalPlanTestSuite extends BasePlanTest {
     val sb = new StringBuilder()
     dag.getRangesMaps.values.forEach((vList: util.List[Coprocessor.KeyRange]) => {
       def foo(vList: util.List[Coprocessor.KeyRange]) = {
-        import scala.collection.JavaConversions._
-        for (range <- vList) { // LogDesensitization: show key range in coprocessor request in log
+        import scala.jdk.CollectionConverters._
+        for (range <- vList.asScala) { // LogDesensitization: show key range in coprocessor request in log
           sb.append(KeyUtils.formatBytesUTF8(range))
         }
       }

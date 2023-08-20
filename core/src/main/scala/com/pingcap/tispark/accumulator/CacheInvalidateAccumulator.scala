@@ -20,7 +20,7 @@ import java.util
 import org.apache.spark.util.AccumulatorV2
 import org.tikv.common.event.CacheInvalidateEvent
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 /**
  * A cache invalidate request collector.
@@ -54,9 +54,9 @@ class CacheInvalidateAccumulator
 
   override def merge(
       other: AccumulatorV2[CacheInvalidateEvent, Seq[CacheInvalidateEvent]]): Unit =
-    eventSet.addAll(other.value)
+    eventSet.asScala.addAll(other.value)
 
-  override def value: Seq[CacheInvalidateEvent] = eventSet.toList
+  override def value: Seq[CacheInvalidateEvent] = eventSet.asScala.toList
 
   def remove(event: CacheInvalidateEvent): Boolean =
     eventSet.synchronized {

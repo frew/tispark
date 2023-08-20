@@ -29,7 +29,7 @@ import com.pingcap.tispark.statistics.estimate.{DefaultTableSizeEstimator, Table
 import org.slf4j.LoggerFactory
 import org.tikv.shade.com.google.common.cache.CacheBuilder
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 import scala.collection.mutable
 
 private[statistics] case class StatisticsDTO(
@@ -119,7 +119,7 @@ object StatisticsManager {
 
       // TODO load statistics by pid
       val tblId = table.getId
-      val tblCols = table.getColumns
+      val tblCols = table.getColumns.asScala
       val loadAll = columns == null || columns.isEmpty
       var neededColIds = mutable.ArrayBuffer[Long]()
       if (!loadAll) {
@@ -216,7 +216,7 @@ object StatisticsManager {
   }
 
   private[statistics] def readDAGRequest(req: TiDAGRequest, physicalId: Long): Iterator[Row] =
-    snapshot.tableReadRow(req, physicalId)
+    snapshot.tableReadRow(req, physicalId).asScala
 
   private def statisticsResultFromStorage(
       tableId: Long,
@@ -238,7 +238,7 @@ object StatisticsManager {
         // split bucket rows into index rows / non-index rows
         val (idxRows, colRows) = rowsById.partition { _.getLong(1) > 0 }
         val (idxReq, colReq) = requests.partition { _.isIndex > 0 }
-        Array(
+        Seq(
           StatisticsHelper.extractStatisticResult(histId, idxRows.iterator, idxReq),
           StatisticsHelper.extractStatisticResult(histId, colRows.iterator, colReq))
       }

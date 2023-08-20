@@ -37,9 +37,8 @@ import com.pingcap.tispark.v2.TiDBTable
 import org.apache.spark.sql.catalyst.expressions.aggregate._
 import org.apache.spark.sql.execution.TiConverter.fromSparkType
 
-import scala.collection.JavaConversions._
-import scala.collection.JavaConverters._
 import scala.collection.mutable
+import scala.jdk.CollectionConverters._
 
 object TiExprUtils {
   type TiDataType = com.pingcap.tikv.types.DataType
@@ -93,7 +92,7 @@ object TiExprUtils {
               val firstCol = meta.getColumns.get(0)
               ColumnRef.create(firstCol.getName, meta)
             } else {
-              dagRequest.getFields.head
+              dagRequest.getFields.asScala.head
             }
           }
           if (dagRequest.getFields.isEmpty) {
@@ -232,6 +231,7 @@ object TiExprUtils {
   def isPushDownSupported(expr: Expression, source: TiDBTable): Boolean = {
     val nameTypeMap = mutable.HashMap[String, com.pingcap.tikv.types.DataType]()
     source.table.getColumns
+      .asScala
       .foreach((info: TiColumnInfo) => nameTypeMap(info.getName) = info.getType)
 
     if (expr.children.isEmpty) {

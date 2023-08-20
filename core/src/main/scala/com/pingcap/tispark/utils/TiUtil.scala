@@ -176,9 +176,9 @@ object TiUtil {
     }
 
     if (conf.contains(TiConfigConst.ISOLATION_READ_ENGINES)) {
-      import scala.collection.JavaConversions._
+      import scala.jdk.CollectionConverters._
       tiConf.setIsolationReadEngines(
-        getIsolationReadEnginesFromString(conf.get(TiConfigConst.ISOLATION_READ_ENGINES)).toList)
+        getIsolationReadEnginesFromString(conf.get(TiConfigConst.ISOLATION_READ_ENGINES)).toList.asJava)
     }
 
     if (conf.contains(TiConfigConst.KV_CLIENT_CONCURRENCY)) {
